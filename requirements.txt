@@ -3,3 +3,8 @@ imagehash
 Pillow
 pytest
 rapidfuzz
+fastapi
+uvicorn
+httpx
+beautifulsoup4
+sqlmodel
