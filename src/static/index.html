@@ -123,19 +123,19 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">BHK</label>
                         <div class="flex gap-2 flex-wrap">
                             <label class="cursor-pointer">
-                                <input type="radio" name="bhk" value="1" class="hidden peer">
+                                <input type="checkbox" name="bhk" value="1" class="hidden peer">
                                 <span class="px-3 py-1 text-sm border border-gray-300 rounded-full peer-checked:border-indigo-500 peer-checked:text-indigo-600 peer-checked:bg-indigo-50 bg-white">1</span>
                             </label>
                             <label class="cursor-pointer">
-                                <input type="radio" name="bhk" value="2" class="hidden peer">
+                                <input type="checkbox" name="bhk" value="2" class="hidden peer">
                                 <span class="px-3 py-1 text-sm border border-gray-300 rounded-full peer-checked:border-indigo-500 peer-checked:text-indigo-600 peer-checked:bg-indigo-50 bg-white">2</span>
                             </label>
                             <label class="cursor-pointer">
-                                <input type="radio" name="bhk" value="3" class="hidden peer">
+                                <input type="checkbox" name="bhk" value="3" class="hidden peer">
                                 <span class="px-3 py-1 text-sm border border-gray-300 rounded-full peer-checked:border-indigo-500 peer-checked:text-indigo-600 peer-checked:bg-indigo-50 bg-white">3</span>
                             </label>
                             <label class="cursor-pointer">
-                                <input type="radio" name="bhk" value="4+" class="hidden peer">
+                                <input type="checkbox" name="bhk" value="4+" class="hidden peer">
                                 <span class="px-3 py-1 text-sm border border-gray-300 rounded-full peer-checked:border-indigo-500 peer-checked:text-indigo-600 peer-checked:bg-indigo-50 bg-white">4+</span>
                             </label>
                         </div>
@@ -286,6 +286,31 @@
                 <button id="open-cross-compare-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg text-sm shadow-sm transition-colors">
                     Compare Properties
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Detail Modal -->
+    <div id="property-detail-modal" class="hidden fixed inset-0 z-[70] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-900 bg-opacity-60 transition-opacity backdrop-blur-sm" aria-hidden="true" onclick="closePropertyDetailModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full border border-gray-100">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                        <div>
+                            <h3 class="text-xl leading-6 font-black text-gray-900" id="property-detail-title">Property Details</h3>
+                        </div>
+                        <button onclick="closePropertyDetailModal()" class="text-gray-400 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 p-2 rounded-full focus:outline-none transition-colors">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+
+                    <div id="property-detail-content" class="mt-2 text-gray-700">
+                        <!-- Content -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -480,14 +505,14 @@
             const sort = sortSelect?.value || '';
 
             // Handle checkboxes / radio for specific fields
-            const typeCheckbox = document.querySelector('input[name="property_type"]:checked');
-            const propertyType = typeCheckbox ? typeCheckbox.value : '';
+            const typeCheckboxes = document.querySelectorAll('input[name="property_type"]:checked');
+            const propertyTypes = Array.from(typeCheckboxes).map(cb => cb.value);
 
-            const bhkRadio = document.querySelector('input[name="bhk"]:checked');
-            const bhk = bhkRadio ? bhkRadio.value : '';
+            const bhkCheckboxes = document.querySelectorAll('input[name="bhk"]:checked');
+            const bhks = Array.from(bhkCheckboxes).map(cb => cb.value);
 
-            const statusCheckbox = document.querySelector('input[name="status"]:checked');
-            const status = statusCheckbox ? statusCheckbox.value : '';
+            const statusCheckboxes = document.querySelectorAll('input[name="status"]:checked');
+            const statuses = Array.from(statusCheckboxes).map(cb => cb.value);
 
             const params = new URLSearchParams();
             if (locality) params.append('locality', locality);
@@ -495,9 +520,11 @@
             if (maxPrice) params.append('max_price', maxPrice);
             if (minArea) params.append('min_area_sqft', minArea);
             if (maxArea) params.append('max_area_sqft', maxArea);
-            if (propertyType) params.append('property_type', propertyType);
-            if (bhk) params.append('bhk', bhk);
-            if (status) params.append('status', status);
+
+            propertyTypes.forEach(pt => params.append('property_type', pt));
+            bhks.forEach(b => params.append('bhk', b));
+            statuses.forEach(s => params.append('status', s));
+
             if (builder) params.append('builder', builder);
             if (sort && sort !== 'relevance') params.append('sort_by', sort);
 
@@ -649,7 +676,7 @@
                                 </div>
                                 <div class="flex gap-2 w-full sm:w-auto">
                                     ${sources.length > 1 ? `<button onclick="openModal('${cluster.canonical_id}')" class="flex-1 sm:flex-none bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-1.5 px-4 rounded-lg text-sm transition-colors border border-indigo-200">Compare Sources</button>` : ''}
-                                    <a href="#" class="flex-1 sm:flex-none bg-gray-900 hover:bg-gray-800 text-white font-bold py-1.5 px-4 rounded-lg text-sm transition-colors text-center border border-gray-900">View Property</a>
+                                    <button onclick="openPropertyDetailModal('${cluster.canonical_id}')" class="flex-1 sm:flex-none bg-gray-900 hover:bg-gray-800 text-white font-bold py-1.5 px-4 rounded-lg text-sm transition-colors text-center border border-gray-900">View Property</button>
                                 </div>
                             </div>
                         </div>
@@ -758,6 +785,119 @@
 
         const closeModal = () => {
             modal.classList.add('hidden');
+        };
+
+        const openPropertyDetailModal = async (canonicalId) => {
+            const detailModal = document.getElementById('property-detail-modal');
+            const detailContent = document.getElementById('property-detail-content');
+
+            detailContent.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                    <svg class="animate-spin h-8 w-8 text-indigo-500 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <span class="font-medium">Loading property data...</span>
+                </div>`;
+            detailModal.classList.remove('hidden');
+
+            try {
+                const res = await fetch(`/api/properties/${canonicalId}`);
+                const data = await res.json();
+
+                const minPrice = Math.min(...data.listings.map(l => l.price_inr));
+                const maxPrice = Math.max(...data.listings.map(l => l.price_inr));
+                const avgArea = data.average_area_sqft;
+                const title = data.listings[0]?.title || 'Property Detail';
+                document.getElementById('property-detail-title').textContent = title;
+
+                let contentHtml = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="md:col-span-2 space-y-6">
+                            <!-- Image Placeholder -->
+                            <div class="w-full h-64 bg-gray-200 rounded-xl flex items-center justify-center border border-gray-300 relative overflow-hidden">
+                                <svg class="w-16 h-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <div class="absolute bottom-4 left-4 bg-black/60 text-white px-3 py-1 rounded text-sm font-medium backdrop-blur-sm">Verified Match</div>
+                            </div>
+
+                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                                <h4 class="font-bold text-lg text-gray-900 mb-4">Property Overview</h4>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Locality</p>
+                                        <p class="text-sm font-bold text-gray-900">${data.locality}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Type</p>
+                                        <p class="text-sm font-bold text-gray-900">${data.property_type || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">BHK</p>
+                                        <p class="text-sm font-bold text-gray-900">${data.bhk || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Area</p>
+                                        <p class="text-sm font-bold text-gray-900">${Math.round(avgArea).toLocaleString('en-IN')} sq.ft</p>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Bathrooms</p>
+                                        <p class="text-sm font-bold text-gray-900">${data.bathrooms || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Status</p>
+                                        <p class="text-sm font-bold text-gray-900">${data.status || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Builder</p>
+                                        <p class="text-sm font-bold text-gray-900">${data.builder || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Possession</p>
+                                        <p class="text-sm font-bold text-gray-900">${data.possession_date ? new Date(data.possession_date).toLocaleDateString() : '-'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
+                                <p class="text-xs text-indigo-800 uppercase font-bold tracking-wider mb-2">Best Price Available</p>
+                                <p class="text-3xl font-black text-indigo-700">${formatMoney(minPrice)}</p>
+                                ${minPrice !== maxPrice ? `<p class="text-xs text-gray-600 mt-2">Prices range up to <span class="font-bold">${formatMoney(maxPrice)}</span> across platforms.</p>` : ''}
+
+                                <button onclick="closePropertyDetailModal(); openModal('${data.canonical_id}');" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-indigo-200 transition-all text-sm">
+                                    Compare ${data.sources_count} Source${data.sources_count > 1 ? 's' : ''}
+                                </button>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-xl border border-gray-200">
+                                <h4 class="font-bold text-sm text-gray-900 mb-3 uppercase tracking-wide">Available On</h4>
+                                <div class="space-y-3">
+                                    ${data.listings.map(l => `
+                                        <a href="${l.source_url}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-colors group">
+                                            <div class="flex items-center gap-3">
+                                                ${getSourceLogo(l.source)}
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-sm font-black text-gray-900">${formatMoney(l.price_inr)}</p>
+                                                <p class="text-[10px] text-indigo-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider">View &rarr;</p>
+                                            </div>
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                detailContent.innerHTML = contentHtml;
+
+            } catch (err) {
+                detailContent.innerHTML = `<div class="bg-red-50 text-red-600 p-6 rounded-xl border border-red-100 text-center font-medium">Failed to load property details. Please try again.</div>`;
+            }
+        };
+
+        const closePropertyDetailModal = () => {
+            document.getElementById('property-detail-modal').classList.add('hidden');
         };
 
         // Cross Compare Logic

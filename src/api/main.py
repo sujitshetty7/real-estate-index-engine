@@ -58,9 +58,9 @@ def search_properties(
     min_area_sqft: Optional[float] = None,
     max_area_sqft: Optional[float] = None,
     max_price_per_sqft: Optional[float] = None,
-    property_type: Optional[str] = None,
-    bhk: Optional[str] = None,
-    status: Optional[str] = None,
+    property_type: Optional[List[str]] = Query(None),
+    bhk: Optional[List[str]] = Query(None),
+    status: Optional[List[str]] = Query(None),
     builder: Optional[str] = None,
     sort_by: Optional[str] = Query(None, pattern="^(price_asc|price_desc|area_desc|relevance)$"),
     session: Session = Depends(get_session)
