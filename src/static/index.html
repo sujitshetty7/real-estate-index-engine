@@ -152,13 +152,13 @@
             resultsContainer.innerHTML = '';
             loadingSpinner.classList.remove('hidden');
 
-            const locality = document.getElementById('filter-locality').value;
-            const minPrice = document.getElementById('filter-min-price').value;
-            const maxPrice = document.getElementById('filter-max-price').value;
-            let minArea = document.getElementById('filter-min-area').value;
-            let maxArea = document.getElementById('filter-max-area').value;
+            const locality = document.getElementById('filter-locality')?.value || '';
+            const minPrice = document.getElementById('filter-min-price')?.value || '';
+            const maxPrice = document.getElementById('filter-max-price')?.value || '';
+            let minArea = document.getElementById('filter-min-area')?.value || '';
+            let maxArea = document.getElementById('filter-max-area')?.value || '';
             const areaUnit = document.getElementById('area-unit-toggle') ? document.getElementById('area-unit-toggle').value : 'sqft';
-            const sort = document.getElementById('filter-sort').value;
+            const sort = document.getElementById('filter-sort')?.value || '';
 
             // Auto-convert area back to sqft for the API if Guntha is selected
             if (areaUnit === 'guntha') {
