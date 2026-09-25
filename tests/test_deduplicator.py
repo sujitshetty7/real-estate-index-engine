@@ -45,3 +45,51 @@ def test_cluster_listings(mock_listings):
 
     cluster_2 = next(c for c in clusters if len(c.listings) == 1)
     assert cluster_2.locality == "Karjat"
+
+def test_transitive_matching():
+    # A matches B, B matches C, but A doesn't strictly match C well enough to cross the threshold on its own.
+    # Due to connected components, they should all end up in the same cluster.
+
+    # Create 3 listings
+    l_a = NormalizedListing(
+        id="A", source="src1", title="10 Guntha land in Pune", area_sqft=10890.0,
+        price_inr=10000000.0, price_per_sqft=918.27, locality="Pune",
+        image_phash="1111111111111111", source_url="urlA"
+    )
+
+    # B matches A's area perfectly, and has same phash. Similar title.
+    # So A matches B strongly.
+    l_b = NormalizedListing(
+        id="B", source="src2", title="10 Guntha plot Pune", area_sqft=10890.0,
+        price_inr=10500000.0, price_per_sqft=964.18, locality="Pune",
+        image_phash="1111111111111111", source_url="urlB"
+    )
+
+    # C matches B because price is identical to B, title is similar to B.
+    # But C's image is completely different from A and B, and area is different from A.
+    l_c = NormalizedListing(
+        id="C", source="src3", title="Plot 10 Guntha Pune", area_sqft=11200.0, # closer area to bump score
+        price_inr=10500000.0, price_per_sqft=913.04, locality="Pune",
+        image_phash="9999999999999999", source_url="urlC"
+    )
+
+    # Let's verify our assumptions about their direct similarities
+    sim_a_b = compute_similarity(l_a, l_b)
+    sim_b_c = compute_similarity(l_b, l_c)
+    sim_a_c = compute_similarity(l_a, l_c)
+
+    # Set threshold such that A-B and B-C pass, but A-C fails
+    # Force threshold strictly between the required boundaries
+    threshold = sim_a_c + 0.01
+
+    assert sim_a_b >= threshold
+    assert sim_b_c >= threshold
+    assert sim_a_c < threshold
+
+    listings = [l_a, l_b, l_c]
+    clusters = cluster_listings(listings, threshold=threshold)
+
+    # Since A matches B and B matches C, all three should be in 1 cluster
+    assert len(clusters) == 1
+    assert len(clusters[0].listings) == 3
+    assert {l.id for l in clusters[0].listings} == {"A", "B", "C"}

@@ -47,29 +47,37 @@ def compute_similarity(listing_a: NormalizedListing, listing_b: NormalizedListin
     return score
 
 def cluster_listings(listings: List[NormalizedListing], threshold: float = 0.70) -> List[PropertyCluster]:
-    clusters = []
+    n = len(listings)
+    adj = {i: [] for i in range(n)}
 
-    # Simple connected components algorithm for clustering
-    # Each list inside 'groups' represents indices of listings that belong together
+    # Build adjacency list based on similarity threshold
+    for i in range(n):
+        for j in range(i + 1, n):
+            if compute_similarity(listings[i], listings[j]) >= threshold:
+                adj[i].append(j)
+                adj[j].append(i)
+
+    clusters = []
     visited = set()
 
-    for i in range(len(listings)):
-        if i in visited:
-            continue
+    # Extract connected components using BFS
+    for i in range(n):
+        if i not in visited:
+            component_indices = []
+            queue = [i]
+            visited.add(i)
 
-        current_cluster = [listings[i]]
-        visited.add(i)
+            while queue:
+                curr = queue.pop(0)
+                component_indices.append(curr)
 
-        for j in range(i + 1, len(listings)):
-            if j in visited:
-                continue
+                for neighbor in adj[curr]:
+                    if neighbor not in visited:
+                        visited.add(neighbor)
+                        queue.append(neighbor)
 
-            sim_score = compute_similarity(listings[i], listings[j])
-            if sim_score >= threshold:
-                current_cluster.append(listings[j])
-                visited.add(j)
-
-        clusters.append(current_cluster)
+            current_cluster = [listings[idx] for idx in component_indices]
+            clusters.append(current_cluster)
 
     result = []
     for cluster in clusters:
