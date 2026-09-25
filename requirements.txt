@@ -7,3 +7,4 @@ Pillow
 rapidfuzz
 httpx
 beautifulsoup4
+pytest
