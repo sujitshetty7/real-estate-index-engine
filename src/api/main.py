@@ -66,7 +66,10 @@ def search_properties(
             "sources_count": c.sources_count,
             "listings": [
                 {
-                    "title": l.title
+                    "title": l.title,
+                    "price_inr": l.price_inr,
+                    "source": l.source,
+                    "area_sqft": l.area_sqft
                 } for l in c.listings
             ]
         })
