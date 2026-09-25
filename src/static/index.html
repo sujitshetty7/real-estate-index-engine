@@ -17,7 +17,7 @@
             <div class="flex justify-between h-16 items-center">
                 <div class="text-xl font-bold text-indigo-600">🏠 RE Indexer</div>
                 <button id="btn-load-demo" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md shadow flex items-center transition-colors">
-                    ⚡ Load Demo Data
+            <span>⚡ Run Live Scrapers (Mumbai)</span>
                 </button>
             </div>
         </div>
@@ -210,7 +210,9 @@
                             </span>
                         </div>
 
-                        <h3 class="text-xl font-bold mb-2">Canonical Property Match</h3>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800 line-clamp-2" title="${cluster.listings && cluster.listings.length > 0 ? cluster.listings[0].title : 'Property Match'}">
+                            ${cluster.listings && cluster.listings.length > 0 ? cluster.listings[0].title : 'Canonical Property Match'}
+                        </h3>
 
                         <div class="grid grid-cols-2 gap-4 mt-6">
                             <div>
@@ -324,15 +326,15 @@
 
         btnLoadDemo.addEventListener('click', async () => {
             btnLoadDemo.disabled = true;
-            btnLoadDemo.innerHTML = `<span class="animate-pulse">Loading...</span>`;
+            btnLoadDemo.innerHTML = `<span class="animate-pulse">Scraping Live Data...</span>`;
             try {
-                await fetch('/api/ingest/sample', { method: 'POST' });
+                await fetch('/api/ingest/live', { method: 'POST' });
                 await fetchProperties();
             } catch (err) {
-                alert('Failed to load demo data.');
+                alert('Failed to scrape live data.');
             } finally {
                 btnLoadDemo.disabled = false;
-                btnLoadDemo.innerHTML = `⚡ Load Demo Data`;
+                btnLoadDemo.innerHTML = `⚡ Run Live Scrapers (Mumbai)`;
             }
         });
 

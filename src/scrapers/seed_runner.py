@@ -7,7 +7,7 @@ from src.deduplicator import cluster_listings
 from src.models import NormalizedListing, RawListing
 from typing import List
 
-def process_and_store_listings(raw_listings: List[RawListing], engine_override=None):
+def process_and_store_listings(raw_listings: List[RawListing], engine_override=None, append=False):
     from src.db.database import engine as default_engine
     target_engine = engine_override if engine_override else default_engine
 
@@ -31,6 +31,10 @@ def process_and_store_listings(raw_listings: List[RawListing], engine_override=N
         try:
             area = normalize_area(raw.raw_area_text)
             price = normalize_price(raw.raw_price_text)
+
+            # Skip invalid normalized data
+            if area <= 0 or price <= 0:
+                continue
 
             normalized_objs.append(
                 NormalizedListing(
@@ -81,57 +85,54 @@ def process_and_store_listings(raw_listings: List[RawListing], engine_override=N
         db_clusters.append(db_cluster)
 
     with Session(target_engine) as session:
-        clear_db(session)
+        if not append:
+            clear_db(session)
         save_raw_listings(session, db_raw_listings)
         save_clusters(session, db_clusters)
 
-    print(f"Successfully processed and stored {len(raw_listings)} listings and {len(clusters)} clusters.")
+    print(f"Successfully processed and stored {len(normalized_objs)} valid listings and {len(clusters)} clusters.")
+
+async def run_live_scrapers():
+    from src.scrapers.nobroker import NoBrokerScraper
+    from src.scrapers.squareyards import SquareYardsScraper
+
+    print("Running live scrapers for Mumbai...")
+    all_listings = []
+
+    try:
+        nb_scraper = NoBrokerScraper(locality="Mumbai")
+        nb_url = 'https://www.nobroker.in/flats-for-sale-in-mumbai_mumbai'
+        nb_html = await nb_scraper.fetch_page(nb_url)
+        nb_listings = nb_scraper.parse(nb_html, nb_url)
+        print(f"NoBroker returned {len(nb_listings)} raw listings")
+        all_listings.extend(nb_listings)
+    except Exception as e:
+        print(f"Failed to scrape NoBroker: {e}")
+
+    try:
+        sy_scraper = SquareYardsScraper(locality="Mumbai")
+        sy_url = 'https://www.squareyards.com/sale/property-for-sale-in-mumbai'
+        sy_html = await sy_scraper.fetch_page(sy_url)
+        sy_listings = sy_scraper.parse(sy_html, sy_url)
+        print(f"SquareYards returned {len(sy_listings)} raw listings")
+        all_listings.extend(sy_listings)
+    except Exception as e:
+        print(f"Failed to scrape SquareYards: {e}")
+
+    return all_listings
 
 async def run_seed():
     from src.db.database import create_db_and_tables
-    from src.sample_data import sample_listings
-    from src.scrapers.generic_html import GenericHTMLScraper
 
     create_db_and_tables()
 
-    # 1. First run the scrapers to simulate web ingestion
-    # For demonstration, we create a mock HTML to parse since we don't have a real URL setup
-    mock_html = """
-    <html>
-        <body>
-            <div class="property-card">
-                <h2 class="title">10 Guntha land near Karjat Station</h2>
-                <span class="area">10 Guntha</span>
-                <span class="price">1.5 Cr</span>
-            </div>
-            <div class="property-card">
-                <h2 class="title">Farm Plot Lonavala Hill</h2>
-                <span class="area">5000 sqft</span>
-                <span class="price">40 Lakh</span>
-            </div>
-        </body>
-    </html>
-    """
+    # Get live listings
+    scraped_listings = await run_live_scrapers()
 
-    scraper = GenericHTMLScraper(
-        source_name="mock_directory",
-        selectors={
-            "container": ".property-card",
-            "title": ".title",
-            "area": ".area",
-            "price": ".price"
-        },
-        locality="Karjat/Lonavala"
-    )
+    print(f"Total live raw listings to process: {len(scraped_listings)}")
 
-    print("Scraping properties...")
-    scraped_listings = scraper.parse(mock_html, source_url="http://mock-directory.com/listings")
-
-    # 2. Combine with sample listings
-    all_listings = sample_listings + scraped_listings
-
-    print(f"Total raw listings to process: {len(all_listings)}")
-    process_and_store_listings(all_listings)
+    # Process and overwrite db with live listings
+    process_and_store_listings(scraped_listings, append=False)
 
 if __name__ == "__main__":
     asyncio.run(run_seed())
