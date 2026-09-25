@@ -1,5 +1,9 @@
+fastapi
+uvicorn[standard]
+sqlmodel
 pydantic
 imagehash
 Pillow
-pytest
 rapidfuzz
+httpx
+beautifulsoup4
