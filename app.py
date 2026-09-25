@@ -1,7 +1,15 @@
 import sys
 import os
 
-# Explicitly add the project root to sys.path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add root directory to sys.path
+root_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, root_dir)
 
-from src.api.main import app
+try:
+    from src.api.main import app
+except ModuleNotFoundError:
+    try:
+        from api.main import app
+    except ModuleNotFoundError:
+        print("DEBUG: Root directory files:", os.listdir(root_dir))
+        raise
