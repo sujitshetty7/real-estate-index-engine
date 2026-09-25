@@ -5,7 +5,7 @@ from sqlmodel import Session, SQLModel
 from src.db.database import get_session, create_db_and_tables, engine
 import os
 from src.db.crud import get_clusters, get_cluster_by_id
-from src.scrapers.seed_runner import process_and_store_listings
+from src.scrapers.seed_runner import process_and_store_listings, run_live_scrapers
 from src.sample_data import sample_listings
 from typing import List, Optional
 import asyncio
@@ -55,9 +55,23 @@ def search_properties(
         sort_by=sort_by
     )
 
-    # We serialize the clusters without the deep nested listings by default or selectively
     # Let's return them with minimal listing info
-    return {"clusters": clusters}
+    clusters_data = []
+    for c in clusters:
+        clusters_data.append({
+            "canonical_id": c.canonical_id,
+            "locality": c.locality,
+            "median_price_inr": c.median_price_inr,
+            "average_area_sqft": c.average_area_sqft,
+            "sources_count": c.sources_count,
+            "listings": [
+                {
+                    "title": l.title
+                } for l in c.listings
+            ]
+        })
+
+    return {"clusters": clusters_data}
 
 @app.get("/api/properties/{canonical_id}")
 def get_property_cluster(canonical_id: str, session: Session = Depends(get_session)):
@@ -93,3 +107,12 @@ def ingest_sample_data(session: Session = Depends(get_session)):
     SQLModel.metadata.create_all(session.bind)
     process_and_store_listings(sample_listings, engine_override=session.bind)
     return {"message": "Successfully ingested sample data and updated clusters"}
+
+@app.post("/api/ingest/live")
+async def ingest_live_data(session: Session = Depends(get_session)):
+    SQLModel.metadata.create_all(session.bind)
+    scraped_listings = await run_live_scrapers()
+    if scraped_listings:
+        process_and_store_listings(scraped_listings, engine_override=session.bind, append=False)
+        return {"message": f"Successfully scraped and stored {len(scraped_listings)} live listings."}
+    return {"message": "No live listings found."}
