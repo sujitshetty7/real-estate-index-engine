@@ -1,6 +1,9 @@
 from fastapi import FastAPI, Depends, Query, HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from sqlmodel import Session, SQLModel
 from src.db.database import get_session, create_db_and_tables, engine
+import os
 from src.db.crud import get_clusters, get_cluster_by_id
 from src.scrapers.seed_runner import process_and_store_listings
 from src.sample_data import sample_listings
@@ -12,6 +15,17 @@ app = FastAPI(title="Real Estate Indexer API")
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+
+# Mount static files if needed for other assets, but we'll serve index.html directly on /
+# app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    # Provide absolute path to static/index.html to be safe when running from different locations
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    index_path = os.path.join(base_dir, "static", "index.html")
+    with open(index_path, "r", encoding="utf-8") as f:
+        return f.read()
 
 @app.get("/health")
 def health_check():
