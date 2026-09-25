@@ -62,7 +62,8 @@ def search_properties(
     bhk: Optional[List[str]] = Query(None),
     status: Optional[List[str]] = Query(None),
     builder: Optional[str] = None,
-    sort_by: Optional[str] = Query(None, pattern="^(price_asc|price_desc|area_desc|relevance)$"),
+    possession: Optional[str] = None,
+    sort_by: Optional[str] = Query(None, pattern="^(price_asc|price_desc|area_desc|relevance|price_sqft_asc|distance|most_sources)$"),
     session: Session = Depends(get_session)
 ):
     # Ensure tables are created first for tests
@@ -79,6 +80,7 @@ def search_properties(
         bhk=bhk,
         status=status,
         builder=builder,
+        possession=possession,
         sort_by=sort_by
     )
 

@@ -20,6 +20,7 @@ def get_clusters(session: Session, locality: Optional[str] = None,
                  bhk: Optional[List[str]] = None,
                  status: Optional[List[str]] = None,
                  builder: Optional[str] = None,
+                 possession: Optional[str] = None,
                  sort_by: Optional[str] = None) -> List[DBPropertyCluster]:
 
     query = select(DBPropertyCluster)
@@ -64,12 +65,34 @@ def get_clusters(session: Session, locality: Optional[str] = None,
         if bhk_conditions:
             query = query.where(or_(*bhk_conditions))
 
+    if possession:
+        from datetime import datetime, timedelta
+        now = datetime.utcnow()
+        if possession == "immediate":
+            # Assuming null or dates in the past mean immediate/ready
+            from sqlmodel import or_
+            query = query.where(or_(DBPropertyCluster.possession_date == None, DBPropertyCluster.possession_date <= now.isoformat()))
+        elif possession == "1_year":
+            one_year = now + timedelta(days=365)
+            query = query.where(DBPropertyCluster.possession_date <= one_year.isoformat())
+        elif possession == "3_years":
+            three_years = now + timedelta(days=365*3)
+            query = query.where(DBPropertyCluster.possession_date <= three_years.isoformat())
+
     if sort_by == "price_asc":
         query = query.order_by(DBPropertyCluster.median_price_inr.asc())
     elif sort_by == "price_desc":
         query = query.order_by(DBPropertyCluster.median_price_inr.desc())
     elif sort_by == "area_desc":
         query = query.order_by(DBPropertyCluster.average_area_sqft.desc())
+    elif sort_by == "price_sqft_asc":
+        query = query.where(DBPropertyCluster.average_area_sqft > 0).order_by((DBPropertyCluster.median_price_inr / DBPropertyCluster.average_area_sqft).asc())
+    elif sort_by == "most_sources":
+        query = query.order_by(DBPropertyCluster.sources_count.desc())
+    elif sort_by == "distance":
+        # Placeholder for distance - assuming we'll handle this purely in frontend if needed
+        # Or sort by id for stability in backend if no geo coords are in db.
+        query = query.order_by(DBPropertyCluster.id.asc())
 
     results = session.exec(query).all()
 

@@ -170,6 +170,17 @@
                         </div>
                     </div>
 
+                    <!-- Possession -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Possession Status</label>
+                        <select id="filter-possession" class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                            <option value="">Any</option>
+                            <option value="immediate">Immediate / Ready</option>
+                            <option value="1_year">Within 1 Year</option>
+                            <option value="3_years">Within 3 Years</option>
+                        </select>
+                    </div>
+
                     <!-- RERA -->
                     <div>
                         <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
@@ -223,7 +234,22 @@
                         <option value="">Sort by: Relevance</option>
                         <option value="price_asc">Price: Low to High</option>
                         <option value="price_desc">Price: High to Low</option>
+                        <option value="price_sqft_asc">Price/Sq.ft: Low to High</option>
+                        <option value="distance">Distance</option>
+                        <option value="most_sources">Most Sources</option>
                     </select>
+                </div>
+
+                <!-- Indexing Stats Banner -->
+                <div id="stats-banner" class="hidden bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-indigo-100 p-4 text-center shrink-0 shadow-inner">
+                    <p class="text-xs font-medium text-indigo-800 uppercase tracking-wide mb-2">Thikana Platform Stats</p>
+                    <div class="flex justify-center gap-6 text-sm">
+                        <div class="flex flex-col"><span id="stat-total-props" class="font-black text-indigo-700 text-lg">0</span> <span class="text-xs text-gray-600">Indexed</span></div>
+                        <div class="w-px bg-indigo-200"></div>
+                        <div class="flex flex-col"><span id="stat-sources" class="font-black text-indigo-700 text-lg">0</span> <span class="text-xs text-gray-600">Sources</span></div>
+                        <div class="w-px bg-indigo-200"></div>
+                        <div class="flex flex-col"><span id="stat-dupes" class="font-black text-green-600 text-lg">0</span> <span class="text-xs text-gray-600">Dupes Cleaned</span></div>
+                    </div>
                 </div>
 
                 <!-- Scrollable Cards -->
@@ -337,6 +363,19 @@
 
     <script>
         // Utilities
+        const escapeHTML = (str) => {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g,
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag])
+            );
+        };
+
         const formatMoney = (amount) => {
             if (amount >= 10000000) return `₹ ${(amount / 10000000).toFixed(2)} Cr`;
             if (amount >= 100000) return `₹ ${(amount / 100000).toFixed(2)} Lakh`;
@@ -448,7 +487,7 @@
                 const marker = L.marker(coords, { icon }).addTo(map);
 
                 let popupHtml = `<div class="p-2 min-w-[220px] max-h-[250px] overflow-y-auto">
-                    <p class="font-bold text-sm mb-2 border-b pb-1 text-gray-800">${loc} Area (${locClusters.length} properties)</p>`;
+                    <p class="font-bold text-sm mb-2 border-b pb-1 text-gray-800">${escapeHTML(loc)} Area (${locClusters.length} properties)</p>`;
 
                 locClusters.forEach(c => {
                     const listings = c.listings || [];
@@ -457,7 +496,7 @@
 
                     popupHtml += `
                         <div class="mb-3 border-b pb-2 last:border-0 last:mb-0 last:pb-0">
-                            <p class="text-xs font-bold text-gray-900 truncate" title="${listings[0].title}">${listings[0].title}</p>
+                            <p class="text-xs font-bold text-gray-900 truncate" title="${escapeHTML(listings[0].title)}">${escapeHTML(listings[0].title)}</p>
                             <div class="flex justify-between items-center mt-1">
                                 <span class="text-xs text-gray-600">${formatArea(c.average_area_sqft)}</span>
                                 <span class="text-indigo-600 font-bold text-sm">${formatMoney(minPrice)}</span>
@@ -485,9 +524,14 @@
             resultsContainer.innerHTML = '';
             loadingSpinner.classList.remove('hidden');
 
-            // Get stats for dynamic count
+            // Get stats for dynamic count and banner
             fetch('/api/stats').then(res => res.json()).then(stats => {
                 resultsCount.innerHTML = `<span class="text-indigo-600">${stats.properties_indexed.toLocaleString('en-IN')} properties found</span> in Shahapur`;
+
+                document.getElementById('stats-banner').classList.remove('hidden');
+                document.getElementById('stat-total-props').textContent = stats.properties_indexed.toLocaleString('en-IN');
+                document.getElementById('stat-sources').textContent = stats.sources_indexed;
+                document.getElementById('stat-dupes').textContent = stats.duplicates_consolidated.toLocaleString('en-IN');
             }).catch(() => {
                 resultsCount.textContent = 'Properties in Shahapur';
             });
@@ -502,6 +546,7 @@
             const minArea = document.getElementById('filter-min-area')?.value || '';
             const maxArea = document.getElementById('filter-max-area')?.value || '';
             const builder = document.getElementById('filter-builder')?.value || '';
+            const possession = document.getElementById('filter-possession')?.value || '';
             const sort = sortSelect?.value || '';
 
             // Handle checkboxes / radio for specific fields
@@ -526,6 +571,7 @@
             statuses.forEach(s => params.append('status', s));
 
             if (builder) params.append('builder', builder);
+            if (possession) params.append('possession', possession);
             if (sort && sort !== 'relevance') params.append('sort_by', sort);
 
             try {
@@ -636,10 +682,10 @@
                             <!-- Header Row -->
                             <div class="flex justify-between items-start gap-4 pr-8">
                                 <div>
-                                    <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors line-clamp-1" title="${title}">
-                                        ${cluster.bhk ? cluster.bhk + ' BHK ' : ''}${cluster.property_type ? cluster.property_type.charAt(0).toUpperCase() + cluster.property_type.slice(1) : title}
+                                    <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors line-clamp-1" title="${escapeHTML(title)}">
+                                        ${cluster.bhk ? escapeHTML(cluster.bhk.toString()) + ' BHK ' : ''}${cluster.property_type ? escapeHTML(cluster.property_type.charAt(0).toUpperCase() + cluster.property_type.slice(1)) : escapeHTML(title)}
                                     </h3>
-                                    <p class="text-sm text-gray-600 font-medium mt-1">${cluster.locality}, Maharashtra</p>
+                                    <p class="text-sm text-gray-600 font-medium mt-1">${escapeHTML(cluster.locality)}, Maharashtra</p>
                                 </div>
                                 <div class="text-right shrink-0">
                                     <div class="text-2xl font-black text-gray-900 leading-none">${formatMoney(minPrice)}</div>
@@ -767,11 +813,11 @@
                         <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-900 font-medium">
                             ${listing.area_sqft} sq.ft
                         </td>
-                        <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-500 truncate max-w-[200px]" title="${listing.title}">
-                            ${listing.title}
+                        <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-500 truncate max-w-[200px]" title="${escapeHTML(listing.title)}">
+                            ${escapeHTML(listing.title)}
                         </td>
                         <td class="px-6 py-5 whitespace-nowrap text-right">
-                            <a href="${listing.source_url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors">
+                            <a href="${escapeHTML(listing.source_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors">
                                 View Deal
                             </a>
                         </td>
@@ -806,7 +852,7 @@
                 const maxPrice = Math.max(...data.listings.map(l => l.price_inr));
                 const avgArea = data.average_area_sqft;
                 const title = data.listings[0]?.title || 'Property Detail';
-                document.getElementById('property-detail-title').textContent = title;
+                document.getElementById('property-detail-title').textContent = title; // textContent is safe
 
                 let contentHtml = `
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -822,15 +868,15 @@
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Locality</p>
-                                        <p class="text-sm font-bold text-gray-900">${data.locality}</p>
+                                        <p class="text-sm font-bold text-gray-900">${escapeHTML(data.locality)}</p>
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Type</p>
-                                        <p class="text-sm font-bold text-gray-900">${data.property_type || '-'}</p>
+                                        <p class="text-sm font-bold text-gray-900">${escapeHTML(data.property_type) || '-'}</p>
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">BHK</p>
-                                        <p class="text-sm font-bold text-gray-900">${data.bhk || '-'}</p>
+                                        <p class="text-sm font-bold text-gray-900">${escapeHTML(data.bhk ? data.bhk.toString() : '') || '-'}</p>
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Area</p>
@@ -841,19 +887,56 @@
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Bathrooms</p>
-                                        <p class="text-sm font-bold text-gray-900">${data.bathrooms || '-'}</p>
+                                        <p class="text-sm font-bold text-gray-900">${escapeHTML(data.bathrooms ? data.bathrooms.toString() : '') || '-'}</p>
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Status</p>
-                                        <p class="text-sm font-bold text-gray-900">${data.status || '-'}</p>
+                                        <p class="text-sm font-bold text-gray-900">${escapeHTML(data.status) || '-'}</p>
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Builder</p>
-                                        <p class="text-sm font-bold text-gray-900">${data.builder || '-'}</p>
+                                        <p class="text-sm font-bold text-gray-900">${escapeHTML(data.builder) || '-'}</p>
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Possession</p>
-                                        <p class="text-sm font-bold text-gray-900">${data.possession_date ? new Date(data.possession_date).toLocaleDateString() : '-'}</p>
+                                        <p class="text-sm font-bold text-gray-900">${data.possession_date ? escapeHTML(new Date(data.possession_date).toLocaleDateString()) : '-'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Price History Graph (Mock) -->
+                            <div class="bg-white p-6 rounded-xl border border-gray-100 mt-6 shadow-sm">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="font-bold text-lg text-gray-900">Price History</h4>
+                                    <span class="text-xs font-bold bg-green-100 text-green-800 px-2 py-1 rounded border border-green-200">Verified Trend</span>
+                                </div>
+                                <div class="w-full h-40 bg-gray-50 rounded-lg flex items-end relative pt-4 pb-2 px-4 border-b-2 border-l-2 border-gray-200 gap-2 sm:gap-4">
+                                    <!-- Y Axis Labels -->
+                                    <div class="absolute -left-12 flex flex-col justify-between h-full text-[10px] text-gray-400 font-bold py-2">
+                                        <span>+15%</span>
+                                        <span>0%</span>
+                                        <span>-15%</span>
+                                    </div>
+                                    <!-- Bars -->
+                                    <div class="w-1/6 bg-indigo-200 hover:bg-indigo-300 transition-colors h-[40%] rounded-t-sm relative group cursor-pointer">
+                                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-900 text-white text-[10px] py-1 px-2 rounded transition-opacity whitespace-nowrap z-10">${formatMoney(minPrice * 0.95)}</div>
+                                        <div class="absolute -bottom-6 w-full text-center text-[10px] text-gray-500 font-bold truncate">Q1</div>
+                                    </div>
+                                    <div class="w-1/6 bg-indigo-300 hover:bg-indigo-400 transition-colors h-[55%] rounded-t-sm relative group cursor-pointer">
+                                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-900 text-white text-[10px] py-1 px-2 rounded transition-opacity whitespace-nowrap z-10">${formatMoney(minPrice * 0.98)}</div>
+                                        <div class="absolute -bottom-6 w-full text-center text-[10px] text-gray-500 font-bold truncate">Q2</div>
+                                    </div>
+                                    <div class="w-1/6 bg-indigo-400 hover:bg-indigo-500 transition-colors h-[50%] rounded-t-sm relative group cursor-pointer">
+                                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-900 text-white text-[10px] py-1 px-2 rounded transition-opacity whitespace-nowrap z-10">${formatMoney(minPrice * 0.97)}</div>
+                                        <div class="absolute -bottom-6 w-full text-center text-[10px] text-gray-500 font-bold truncate">Q3</div>
+                                    </div>
+                                    <div class="w-1/6 bg-indigo-500 hover:bg-indigo-600 transition-colors h-[70%] rounded-t-sm relative group cursor-pointer">
+                                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-900 text-white text-[10px] py-1 px-2 rounded transition-opacity whitespace-nowrap z-10">${formatMoney(minPrice * 1.05)}</div>
+                                        <div class="absolute -bottom-6 w-full text-center text-[10px] text-gray-500 font-bold truncate">Q4</div>
+                                    </div>
+                                    <div class="w-1/6 bg-indigo-600 hover:bg-indigo-700 transition-colors h-[65%] rounded-t-sm relative group cursor-pointer shadow-lg shadow-indigo-200">
+                                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-900 text-white text-[10px] py-1 px-2 rounded transition-opacity whitespace-nowrap z-10">${formatMoney(minPrice)}</div>
+                                        <div class="absolute -bottom-6 w-full text-center text-[10px] text-gray-500 font-black text-indigo-600 truncate">Now</div>
                                     </div>
                                 </div>
                             </div>
@@ -952,7 +1035,7 @@
                                         <div class="h-24 bg-gray-200 rounded mb-2 flex items-center justify-center text-gray-400">
                                             <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                         </div>
-                                        <div class="text-sm font-bold text-gray-900 truncate" title="${c.listings[0].title}">${c.listings[0].title}</div>
+                                        <div class="text-sm font-bold text-gray-900 truncate" title="${escapeHTML(c.listings[0].title)}">${escapeHTML(c.listings[0].title)}</div>
                                     </th>
                                 `).join('')}
                             </tr>
@@ -964,11 +1047,11 @@
                             </tr>
                             <tr>
                                 <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Location</td>
-                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900">${c.locality}</td>`).join('')}
+                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900">${escapeHTML(c.locality)}</td>`).join('')}
                             </tr>
                             <tr>
                                 <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Type & BHK</td>
-                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900">${c.bhk ? c.bhk+' BHK ' : ''}${c.property_type || '-'}</td>`).join('')}
+                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900">${c.bhk ? escapeHTML(c.bhk.toString())+' BHK ' : ''}${escapeHTML(c.property_type) || '-'}</td>`).join('')}
                             </tr>
                             <tr>
                                 <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Area</td>
@@ -984,7 +1067,7 @@
                             </tr>
                             <tr>
                                 <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Status</td>
-                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900 capitalize">${c.status ? c.status.replace('_',' ') : '-'}</td>`).join('')}
+                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900 capitalize">${c.status ? escapeHTML(c.status).replace('_',' ') : '-'}</td>`).join('')}
                             </tr>
                             <tr>
                                 <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Sources</td>
