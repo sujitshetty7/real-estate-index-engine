@@ -20,39 +20,76 @@
 
     <!-- Navbar -->
     <header class="bg-white shadow-sm border-b border-gray-200 shrink-0 z-20">
-        <div class="px-4 sm:px-6 lg:px-8">
+        <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-4">
                     <div class="text-2xl font-black text-indigo-600 tracking-tight">THIKANA</div>
-                    <div class="hidden lg:block text-sm text-gray-500 font-medium tracking-wide border-l border-gray-300 pl-4 ml-1">Har Property. Ek Jagah.</div>
                 </div>
 
                 <!-- Navigation Links -->
                 <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
-                    <a href="#" class="hover:text-indigo-600 transition-colors">Buy</a>
+                    <a href="#" class="text-indigo-600 font-bold transition-colors">Buy</a>
                     <a href="#" class="hover:text-indigo-600 transition-colors">Rent</a>
                     <a href="#" class="hover:text-indigo-600 transition-colors">Projects</a>
-                    <a href="#" class="hover:text-indigo-600 transition-colors">Plot & Land</a>
+                    <a href="#" class="hover:text-indigo-600 transition-colors">Plots & Land</a>
+                    <a href="#" class="hover:text-indigo-600 transition-colors">Farm Land</a>
                     <a href="#" class="hover:text-indigo-600 transition-colors">Commercial</a>
+                    <a href="#" class="hover:text-indigo-600 transition-colors">Saved</a>
                 </nav>
 
                 <div class="flex items-center gap-4">
-                    <a href="#" class="hidden sm:flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                        Saved
-                    </a>
                     <a href="#" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200">Login</a>
                 </div>
             </div>
 
+            <!-- Main Search Bar Area -->
+            <div class="py-6 border-t border-gray-100">
+                <h1 class="text-xl font-bold text-gray-900 mb-4 text-center">Find the perfect property across all platforms.</h1>
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex flex-col md:flex-row bg-white border border-gray-300 rounded-xl overflow-hidden shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-all">
+
+                        <!-- Buy / Rent Selector -->
+                        <div class="border-b md:border-b-0 md:border-r border-gray-300 bg-gray-50 md:w-32 shrink-0">
+                            <select id="main-intent" class="w-full h-full bg-transparent text-sm font-bold text-gray-700 py-3 px-4 focus:outline-none cursor-pointer appearance-none">
+                                <option value="buy">Buy</option>
+                                <option value="rent">Rent</option>
+                            </select>
+                        </div>
+
+                        <!-- Location Selector -->
+                        <div class="border-b md:border-b-0 md:border-r border-gray-300 bg-white md:w-48 shrink-0 relative flex items-center">
+                            <div class="absolute left-3 text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <input type="text" id="main-location" value="Shahapur 421601" class="w-full h-full text-sm font-bold text-gray-900 py-3 pl-10 pr-3 focus:outline-none" placeholder="Location">
+                        </div>
+
+                        <!-- Search Input -->
+                        <div class="flex-grow bg-white">
+                            <input type="text" id="main-search-text" class="w-full h-full text-sm text-gray-900 py-3 px-4 focus:outline-none placeholder-gray-500" placeholder="Search property, project, village, landmark or RERA number...">
+                        </div>
+
+                        <!-- Search Button -->
+                        <div class="bg-indigo-600 hover:bg-indigo-700 transition-colors md:w-32 shrink-0">
+                            <button id="main-search-btn" class="w-full h-full text-white font-bold text-sm py-3 px-4 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Category Tabs -->
-            <div class="flex gap-6 overflow-x-auto custom-scrollbar border-t border-gray-100 py-3 text-sm font-medium text-gray-600">
+            <div class="flex gap-8 overflow-x-auto custom-scrollbar pt-2 pb-4 text-sm font-bold text-gray-500 justify-center">
                 <a href="#" class="text-indigo-600 border-b-2 border-indigo-600 pb-1 whitespace-nowrap">All Properties</a>
                 <a href="#" class="hover:text-indigo-600 whitespace-nowrap">Flats</a>
+                <a href="#" class="hover:text-indigo-600 whitespace-nowrap">Projects</a>
                 <a href="#" class="hover:text-indigo-600 whitespace-nowrap">Plots</a>
                 <a href="#" class="hover:text-indigo-600 whitespace-nowrap">Farm Land</a>
+                <a href="#" class="hover:text-indigo-600 whitespace-nowrap">Houses</a>
                 <a href="#" class="hover:text-indigo-600 whitespace-nowrap">Villas</a>
-                <a href="#" class="hover:text-indigo-600 whitespace-nowrap">Independent Houses</a>
+                <a href="#" class="hover:text-indigo-600 whitespace-nowrap">Commercial</a>
             </div>
         </div>
     </header>
@@ -65,24 +102,43 @@
             <div class="p-4">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold text-gray-900">Filters</h3>
-                    <button type="button" class="text-xs text-indigo-600 font-medium hover:underline">Clear all</button>
+                    <button type="button" class="text-xs text-indigo-600 font-medium hover:underline" onclick="document.getElementById('filter-sidebar').reset(); fetchProperties();">Clear all</button>
                 </div>
                 <form id="filter-sidebar" class="space-y-6">
-                    <!-- Location -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                        <input type="text" id="filter-locality" value="Shahapur" class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g. Shahapur">
-                    </div>
-
                     <!-- Property Type -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
-                        <select class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                            <option value="">Any</option>
-                            <option value="plot">Plot / Land</option>
-                            <option value="flat">Flat / Apartment</option>
-                            <option value="house">House / Villa</option>
-                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="property_type" value="flat" class="rounded text-indigo-600 focus:ring-indigo-500"> Flat / Apartment</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="property_type" value="plot" class="rounded text-indigo-600 focus:ring-indigo-500"> Plot / Land</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="property_type" value="farm" class="rounded text-indigo-600 focus:ring-indigo-500"> Farm Land</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="property_type" value="house" class="rounded text-indigo-600 focus:ring-indigo-500"> House</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="property_type" value="villa" class="rounded text-indigo-600 focus:ring-indigo-500"> Villa</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="property_type" value="commercial" class="rounded text-indigo-600 focus:ring-indigo-500"> Commercial</label>
+                        </div>
+                    </div>
+
+                    <!-- BHK -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">BHK</label>
+                        <div class="flex gap-2 flex-wrap">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="bhk" value="1" class="hidden peer">
+                                <span class="px-3 py-1 text-sm border border-gray-300 rounded-full peer-checked:border-indigo-500 peer-checked:text-indigo-600 peer-checked:bg-indigo-50 bg-white">1</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="bhk" value="2" class="hidden peer">
+                                <span class="px-3 py-1 text-sm border border-gray-300 rounded-full peer-checked:border-indigo-500 peer-checked:text-indigo-600 peer-checked:bg-indigo-50 bg-white">2</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="bhk" value="3" class="hidden peer">
+                                <span class="px-3 py-1 text-sm border border-gray-300 rounded-full peer-checked:border-indigo-500 peer-checked:text-indigo-600 peer-checked:bg-indigo-50 bg-white">3</span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="bhk" value="4+" class="hidden peer">
+                                <span class="px-3 py-1 text-sm border border-gray-300 rounded-full peer-checked:border-indigo-500 peer-checked:text-indigo-600 peer-checked:bg-indigo-50 bg-white">4+</span>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- Budget -->
@@ -103,53 +159,51 @@
                         </div>
                     </div>
 
-                    <!-- BHK -->
+                    <!-- Property Status -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">BHK</label>
-                        <div class="flex gap-2 flex-wrap">
-                            <button type="button" class="px-3 py-1 text-sm border border-gray-300 rounded-full hover:border-indigo-500 hover:text-indigo-600 bg-white">1</button>
-                            <button type="button" class="px-3 py-1 text-sm border border-gray-300 rounded-full hover:border-indigo-500 hover:text-indigo-600 bg-white">2</button>
-                            <button type="button" class="px-3 py-1 text-sm border border-gray-300 rounded-full hover:border-indigo-500 hover:text-indigo-600 bg-white">3</button>
-                            <button type="button" class="px-3 py-1 text-sm border border-gray-300 rounded-full hover:border-indigo-500 hover:text-indigo-600 bg-white">4+</button>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Status</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="status" value="new" class="rounded text-indigo-600 focus:ring-indigo-500"> New</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="status" value="resale" class="rounded text-indigo-600 focus:ring-indigo-500"> Resale</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="status" value="under_construction" class="rounded text-indigo-600 focus:ring-indigo-500"> Under Construction</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="status" value="ready" class="rounded text-indigo-600 focus:ring-indigo-500"> Ready to Move</label>
                         </div>
                     </div>
 
-                    <!-- Transaction Type -->
+                    <!-- RERA -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Transaction Type</label>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500"> Resale</label>
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500"> New Booking</label>
-                        </div>
-                    </div>
-
-                    <!-- Status -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500"> Ready to Move</label>
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500"> Under Construction</label>
-                        </div>
+                        <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                            <input type="checkbox" id="filter-rera" class="rounded text-indigo-600 focus:ring-indigo-500"> RERA Approved Only
+                        </label>
                     </div>
 
                     <!-- Builder -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Builder</label>
-                        <input type="text" class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Search builder">
+                        <input type="text" id="filter-builder" class="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Search builder">
+                    </div>
+
+                    <!-- Distance -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Distance from Shahapur</label>
+                        <input type="range" class="w-full" min="0" max="50" step="5">
                     </div>
 
                     <!-- Source -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Source</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Source</label>
                         <div class="space-y-2">
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked> SquareYards</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked> 99acres</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked> Magicbricks</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked> Housing</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked> PropertyPistol</label>
                             <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked> NoBroker</label>
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked> Other</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked> SquareYards</label>
                         </div>
                     </div>
 
                     <div class="pt-4 border-t border-gray-200 sticky bottom-0 bg-white pb-2">
-                        <button type="submit" id="apply-filters-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition-colors">
+                        <button type="submit" id="apply-filters-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-colors">
                             Apply Filters
                         </button>
                     </div>
@@ -218,6 +272,44 @@
         </div>
     </div>
 
+    <!-- Bottom Compare Bar -->
+    <div id="bottom-compare-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] transform translate-y-full transition-transform duration-300 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded-full text-sm">
+                    <span id="compare-count">0</span> Properties Selected
+                </div>
+                <p class="text-sm text-gray-500 hidden md:block">Select up to 4 properties to compare them side-by-side.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="clearCompare()" class="text-sm font-medium text-gray-500 hover:text-gray-700">Clear</button>
+                <button id="open-cross-compare-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg text-sm shadow-sm transition-colors">
+                    Compare Properties
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cross Compare Modal -->
+    <div id="cross-compare-modal" class="hidden fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4 text-center sm:p-0">
+            <div class="fixed inset-0 bg-gray-900 bg-opacity-60 transition-opacity backdrop-blur-sm" aria-hidden="true" onclick="closeCrossCompareModal()"></div>
+
+            <div class="inline-block bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-6xl sm:w-full border border-gray-100 h-[80vh] flex flex-col relative z-10">
+                <div class="bg-white px-6 py-4 border-b border-gray-100 flex justify-between items-center shrink-0">
+                    <h3 class="text-xl font-bold text-gray-900">Compare Properties</h3>
+                    <button onclick="closeCrossCompareModal()" class="text-gray-400 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 p-2 rounded-full focus:outline-none transition-colors">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+
+                <div id="cross-compare-content" class="flex-grow overflow-x-auto overflow-y-auto bg-gray-50 p-6 custom-scrollbar">
+                    <!-- Comparison Table Injected Here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Utilities
         const formatMoney = (amount) => {
@@ -246,9 +338,15 @@
         const modal = document.getElementById('compare-modal');
         const modalContent = document.getElementById('modal-content');
 
+        // Cross Comparison State
+        let selectedProperties = new Set();
+        let allClustersData = [];
+
         // Map Initialization
         let map = null;
         let markers = [];
+        let mapMoveTimer = null;
+        let searchAsIMove = true;
 
         const initMap = () => {
             if (map !== null) return;
@@ -260,9 +358,31 @@
                 attribution: '&copy; OpenStreetMap contributors',
                 maxZoom: 19
             }).addTo(map);
+
+            // Add Search as I move control
+            const searchControl = L.control({position: 'topright'});
+            searchControl.onAdd = function () {
+                const div = L.DomUtil.create('div', 'bg-white p-2 rounded shadow-md border border-gray-200 pointer-events-auto');
+                div.innerHTML = `<label class="flex items-center gap-2 text-sm font-bold text-gray-700 cursor-pointer"><input type="checkbox" id="search-move-toggle" checked class="rounded text-indigo-600 focus:ring-indigo-500"> Search as I move the map</label>`;
+                return div;
+            };
+            searchControl.addTo(map);
+
+            document.getElementById('search-move-toggle').addEventListener('change', (e) => {
+                searchAsIMove = e.target.checked;
+            });
+
+            map.on('moveend', () => {
+                if (searchAsIMove) {
+                    clearTimeout(mapMoveTimer);
+                    mapMoveTimer = setTimeout(() => {
+                        fetchProperties(true);
+                    }, 500);
+                }
+            });
         };
 
-        const updateMapMarkers = (clusters) => {
+        const updateMapMarkers = (clusters, isMapMoveEvent) => {
             if (!map) initMap();
             if (!map) return;
 
@@ -329,24 +449,45 @@
                 markers.push(marker);
             });
 
-            if (markers.length > 0) {
+            if (markers.length > 0 && !isMapMoveEvent) {
                 const group = new L.featureGroup(markers);
                 map.fitBounds(group.getBounds().pad(0.1));
             }
         };
 
         // Fetch properties
-        const fetchProperties = async () => {
+        const fetchProperties = async (isMapMoveEvent = false) => {
             resultsContainer.innerHTML = '';
             loadingSpinner.classList.remove('hidden');
-            resultsCount.textContent = 'Searching...';
 
-            const locality = document.getElementById('filter-locality')?.value || '';
+            // Get stats for dynamic count
+            fetch('/api/stats').then(res => res.json()).then(stats => {
+                resultsCount.innerHTML = `<span class="text-indigo-600">${stats.properties_indexed.toLocaleString('en-IN')} properties found</span> in Shahapur`;
+            }).catch(() => {
+                resultsCount.textContent = 'Properties in Shahapur';
+            });
+
+            // Extract main search
+            const mainLoc = document.getElementById('main-location')?.value || '';
+            let locality = mainLoc;
+            if (mainLoc.toLowerCase().includes('shahapur')) locality = 'Shahapur';
+
             const minPrice = document.getElementById('filter-min-price')?.value || '';
             const maxPrice = document.getElementById('filter-max-price')?.value || '';
             const minArea = document.getElementById('filter-min-area')?.value || '';
             const maxArea = document.getElementById('filter-max-area')?.value || '';
+            const builder = document.getElementById('filter-builder')?.value || '';
             const sort = sortSelect?.value || '';
+
+            // Handle checkboxes / radio for specific fields
+            const typeCheckbox = document.querySelector('input[name="property_type"]:checked');
+            const propertyType = typeCheckbox ? typeCheckbox.value : '';
+
+            const bhkRadio = document.querySelector('input[name="bhk"]:checked');
+            const bhk = bhkRadio ? bhkRadio.value : '';
+
+            const statusCheckbox = document.querySelector('input[name="status"]:checked');
+            const status = statusCheckbox ? statusCheckbox.value : '';
 
             const params = new URLSearchParams();
             if (locality) params.append('locality', locality);
@@ -354,16 +495,32 @@
             if (maxPrice) params.append('max_price', maxPrice);
             if (minArea) params.append('min_area_sqft', minArea);
             if (maxArea) params.append('max_area_sqft', maxArea);
-            if (sort) params.append('sort_by', sort);
+            if (propertyType) params.append('property_type', propertyType);
+            if (bhk) params.append('bhk', bhk);
+            if (status) params.append('status', status);
+            if (builder) params.append('builder', builder);
+            if (sort && sort !== 'relevance') params.append('sort_by', sort);
 
             try {
                 const res = await fetch(`/api/properties?${params.toString()}`);
                 const data = await res.json();
-                renderCards(data.clusters || []);
+
+                allClustersData = data.clusters || [];
+
+                if (data.clusters.length === 0) {
+                    resultsContainer.innerHTML = `
+                        <div class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-200">
+                            <span class="text-4xl block mb-3">🔍</span>
+                            <h3 class="text-lg font-bold text-gray-900">Indexing the Shahapur market...</h3>
+                            <p class="text-gray-500 mt-2 max-w-sm mx-auto text-sm">THIKANA is actively collecting properties matching your criteria. Try adjusting your filters.</p>
+                        </div>`;
+                } else {
+                    renderCards(allClustersData);
+                }
 
                 // Update map
                 setTimeout(() => {
-                    updateMapMarkers(data.clusters || []);
+                    updateMapMarkers(data.clusters || [], isMapMoveEvent);
                 }, 100);
 
             } catch (err) {
@@ -395,70 +552,104 @@
 
                 const minPrice = Math.min(...listings.map(l => l.price_inr));
                 const sources = [...new Set(listings.map(l => l.source))];
-                const sourceBadges = sources.map(s => getSourceLogo(s)).join(' ');
+                let sourceCountDisplay = sources.length > 4 ? `[+${sources.length - 3}]` : '';
+                const displaySources = sources.slice(0, 3);
+
+                const sourceBadges = displaySources.map(s => `[${s.charAt(0).toUpperCase() + s.slice(1).replace('_', ' ')}]`).join(' ') + ' ' + sourceCountDisplay;
 
                 const mainListing = listings[0];
                 const title = mainListing.title;
-                const pricePerSqft = Math.round(minPrice / cluster.average_area_sqft);
-                const updatedDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                const verifiedBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> Verified</span>`;
+                const pricePerSqft = cluster.average_area_sqft > 0 ? Math.round(minPrice / cluster.average_area_sqft) : 0;
+
+                let detailsArr = [];
+                if (cluster.average_area_sqft > 0) detailsArr.push(`${cluster.average_area_sqft.toLocaleString('en-IN')} sq.ft`);
+                if (cluster.bhk) detailsArr.push(`${cluster.bhk} BHK`);
+                if (cluster.bathrooms) detailsArr.push(`${cluster.bathrooms} Bath`);
+                const detailsStr = detailsArr.join(' | ');
+
+                let timeStr = '2 hours ago';
+                if (mainListing.last_checked_at) {
+                    const diff = new Date() - new Date(mainListing.last_checked_at);
+                    const hours = Math.floor(diff / 3600000);
+                    timeStr = hours > 24 ? `${Math.floor(hours/24)} days ago` : `${hours} hours ago`;
+                }
 
                 const card = document.createElement('div');
-                card.className = "bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group";
+                card.className = "bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group flex flex-col sm:flex-row mb-4 property-card";
+                card.dataset.locality = cluster.locality;
+                card.dataset.id = cluster.canonical_id;
+
+                // Add hover effect to sync with map
+                card.addEventListener('mouseenter', () => {
+                    const marker = markers.find(m => m.options.locality === cluster.locality);
+                    if (marker) {
+                        marker.getElement().querySelector('.custom-map-marker > div').classList.add('bg-gray-900', 'ring-2', 'ring-white', 'scale-110');
+                        marker.getElement().querySelector('.custom-map-marker > div').classList.remove('bg-indigo-600');
+                        marker.setZIndexOffset(1000);
+                    }
+                });
+                card.addEventListener('mouseleave', () => {
+                    const marker = markers.find(m => m.options.locality === cluster.locality);
+                    if (marker) {
+                        marker.getElement().querySelector('.custom-map-marker > div').classList.remove('bg-gray-900', 'ring-2', 'ring-white', 'scale-110');
+                        marker.getElement().querySelector('.custom-map-marker > div').classList.add('bg-indigo-600');
+                        marker.setZIndexOffset(0);
+                    }
+                });
 
                 card.innerHTML = `
-                    <div class="flex flex-col sm:flex-row h-full relative">
-                        <!-- Save Button Overlay -->
-                        <button class="absolute top-2 right-2 bg-white/90 backdrop-blur p-1.5 rounded-full text-gray-400 hover:text-red-500 shadow-sm z-10 transition-colors border border-gray-100" title="Save Property">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                        </button>
+                    <div class="w-full sm:w-56 h-56 sm:h-auto bg-gray-100 shrink-0 relative border-r border-gray-100">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                            <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        </div>
+                    </div>
 
-                        <!-- Image placeholder -->
-                        <div class="w-full sm:w-48 h-48 sm:h-auto bg-gray-100 shrink-0 relative border-r border-gray-100">
-                            <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
-                                <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                                <span class="text-xs font-medium uppercase tracking-wider text-gray-500">No Image</span>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div class="relative">
+                            <!-- Header Row -->
+                            <div class="flex justify-between items-start gap-4 pr-8">
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors line-clamp-1" title="${title}">
+                                        ${cluster.bhk ? cluster.bhk + ' BHK ' : ''}${cluster.property_type ? cluster.property_type.charAt(0).toUpperCase() + cluster.property_type.slice(1) : title}
+                                    </h3>
+                                    <p class="text-sm text-gray-600 font-medium mt-1">${cluster.locality}, Maharashtra</p>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <div class="text-2xl font-black text-gray-900 leading-none">${formatMoney(minPrice)}</div>
+                                    ${pricePerSqft > 0 ? `<div class="text-xs text-gray-500 font-medium mt-1">₹${pricePerSqft.toLocaleString('en-IN')}/sq.ft</div>` : ''}
+                                </div>
                             </div>
-                            <div class="absolute top-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide z-10">
-                                ${cluster.locality}
-                            </div>
+
+                            <p class="text-sm text-gray-600 font-medium mt-3 pb-4 border-b border-gray-100">${detailsStr}</p>
+
+                            <button class="absolute top-0 right-0 text-gray-400 hover:text-red-500 transition-colors" title="Save Property">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                            </button>
                         </div>
 
-                        <!-- Content -->
-                        <div class="p-5 flex-grow flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-start gap-2 mb-1 pr-8">
-                                    <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2" title="${title}">
-                                        ${title}
-                                    </h3>
+                        <div class="mt-4 flex flex-col gap-3">
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    ${sources.length > 1 ? `<p class="text-sm font-bold text-gray-800 mb-1">Found across ${sources.length} sources</p>` : `<p class="text-sm font-bold text-gray-800 mb-1">Found on 1 source</p>`}
+                                    <p class="text-xs text-gray-500 font-bold">${sourceBadges}</p>
                                 </div>
-                                <div class="flex items-center gap-2 mb-2">
-                                    ${verifiedBadge}
-                                    <span class="text-xs text-gray-500 font-medium">Updated ${updatedDate}</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-3 font-medium">${formatArea(cluster.average_area_sqft)} &bull; ₹${pricePerSqft.toLocaleString('en-IN')}/sq.ft</p>
-
-                                <div class="mb-4">
-                                    <div class="text-xs text-gray-500 font-bold uppercase tracking-wide mb-1">Lowest price found</div>
-                                    <div class="flex items-end gap-2">
-                                        <span class="text-2xl font-black text-gray-900 leading-none">${formatMoney(minPrice)}</span>
-                                    </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wide">Lowest price found</p>
+                                    <p class="text-sm font-black text-indigo-700">${formatMoney(minPrice)}</p>
                                 </div>
                             </div>
 
-                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-2 pt-4 border-t border-gray-100">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="text-xs text-gray-500 font-bold">FOUND ON</span>
-                                    ${sourceBadges}
+                            <div class="flex flex-col sm:flex-row justify-between items-center pt-3 border-t border-gray-100 gap-4">
+                                <div class="flex items-center gap-3 w-full sm:w-auto">
+                                    <label class="flex items-center gap-2 text-sm font-bold text-gray-700 cursor-pointer">
+                                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 compare-checkbox" data-id="${cluster.canonical_id}" ${selectedProperties.has(cluster.canonical_id) ? 'checked' : ''} onchange="toggleCompare('${cluster.canonical_id}', this.checked)"> Compare
+                                    </label>
+                                    <span class="text-xs text-gray-400">&bull;</span>
+                                    <span class="text-xs text-gray-500">Last checked: ${timeStr}</span>
                                 </div>
                                 <div class="flex gap-2 w-full sm:w-auto">
-                                    <a href="${mainListing.source_url}" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center gap-1 whitespace-nowrap shadow-sm">
-                                        View Property
-                                    </a>
-                                    <button onclick="openModal('${cluster.canonical_id}')" class="flex-1 sm:flex-none bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap shadow-sm">
-                                        Compare
-                                        <span class="bg-indigo-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">${cluster.sources_count} sources</span>
-                                    </button>
+                                    ${sources.length > 1 ? `<button onclick="openModal('${cluster.canonical_id}')" class="flex-1 sm:flex-none bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-1.5 px-4 rounded-lg text-sm transition-colors border border-indigo-200">Compare Sources</button>` : ''}
+                                    <a href="#" class="flex-1 sm:flex-none bg-gray-900 hover:bg-gray-800 text-white font-bold py-1.5 px-4 rounded-lg text-sm transition-colors text-center border border-gray-900">View Property</a>
                                 </div>
                             </div>
                         </div>
@@ -492,16 +683,31 @@
 
             listings.sort((a, b) => a.price_inr - b.price_inr);
             const minPrice = listings[0].price_inr;
+            const maxPrice = listings[listings.length - 1].price_inr;
 
             let html = `
-                <div class="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-5 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                <div class="mb-6 bg-indigo-50 border border-indigo-100 rounded-xl p-5 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                     <div>
-                        <h4 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2">${listings[0].title}</h4>
-                        <p class="text-sm text-gray-600 font-medium">${data.locality} &bull; ${formatArea(data.average_area_sqft)}</p>
+                        <h4 class="text-lg font-bold text-gray-900 mb-1">Price Discrepancy Found</h4>
+                        <p class="text-sm text-gray-700">Same property found across ${listings.length} sources with different details.</p>
                     </div>
                     <div class="text-left md:text-right shrink-0">
-                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wide mb-1">Median Market Value</p>
-                        <p class="text-xl font-black text-gray-800">${formatMoney(data.median_price_inr)}</p>
+                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wide mb-1">Lowest Price Found</p>
+                        <p class="text-2xl font-black text-indigo-700">${formatMoney(minPrice)}</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h5 class="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wide">Differences Overview</h5>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <div class="text-xs text-gray-500 font-bold uppercase mb-1">Price Range</div>
+                            <div class="text-sm font-bold text-gray-900">${formatMoney(minPrice)} - ${formatMoney(maxPrice)}</div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <div class="text-xs text-gray-500 font-bold uppercase mb-1">Area Variance</div>
+                            <div class="text-sm font-bold text-gray-900">${Math.min(...listings.map(l=>l.area_sqft))} - ${Math.max(...listings.map(l=>l.area_sqft))} sq.ft</div>
+                        </div>
                     </div>
                 </div>
 
@@ -512,8 +718,8 @@
                                 <tr>
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Source</th>
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Listed Price</th>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Price/Sq.Ft</th>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Verdict</th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Area</th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Title</th>
                                     <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
@@ -522,47 +728,31 @@
 
             listings.forEach((listing) => {
                 const isLowest = listing.price_inr === minPrice;
-                const diffFromMin = listing.price_inr - minPrice;
-
-                let verdictBadge = '';
-                if (isLowest) {
-                    verdictBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">Best Price</span>`;
-                } else {
-                    verdictBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-100">+${formatMoney(diffFromMin)}</span>`;
-                }
 
                 html += `
                     <tr class="hover:bg-gray-50 transition-colors ${isLowest ? 'bg-green-50/30' : ''}">
                         <td class="px-6 py-5 whitespace-nowrap">
                             ${getSourceLogo(listing.source)}
-                            <div class="text-xs text-gray-400 mt-1 max-w-[150px] truncate" title="${listing.title}">${listing.title}</div>
                         </td>
                         <td class="px-6 py-5 whitespace-nowrap">
                             <div class="text-lg font-black ${isLowest ? 'text-green-700' : 'text-gray-900'}">${formatMoney(listing.price_inr)}</div>
                         </td>
-                        <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-600 font-medium">
-                            ₹${Math.round(listing.price_per_sqft).toLocaleString('en-IN')}
+                        <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-900 font-medium">
+                            ${listing.area_sqft} sq.ft
                         </td>
-                        <td class="px-6 py-5 whitespace-nowrap">
-                            ${verdictBadge}
+                        <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-500 truncate max-w-[200px]" title="${listing.title}">
+                            ${listing.title}
                         </td>
                         <td class="px-6 py-5 whitespace-nowrap text-right">
                             <a href="${listing.source_url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors">
                                 View Deal
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                             </a>
                         </td>
                     </tr>
                 `;
             });
 
-            html += `</tbody></table></div></div>
-            <div class="mt-4 flex justify-between items-center text-sm text-gray-500 px-2">
-                <p>Prices are grouped automatically based on property similarity.</p>
-                <p>Data last updated today.</p>
-            </div>
-            `;
-
+            html += `</tbody></table></div></div>`;
             modalContent.innerHTML = html;
         };
 
@@ -570,10 +760,132 @@
             modal.classList.add('hidden');
         };
 
+        // Cross Compare Logic
+        const toggleCompare = (id, isChecked) => {
+            if (isChecked) {
+                if (selectedProperties.size >= 4) {
+                    alert("You can only compare up to 4 properties at once.");
+                    event.target.checked = false;
+                    return;
+                }
+                selectedProperties.add(id);
+            } else {
+                selectedProperties.delete(id);
+            }
+            updateCompareBar();
+        };
+
+        const updateCompareBar = () => {
+            const bar = document.getElementById('bottom-compare-bar');
+            const count = document.getElementById('compare-count');
+            count.textContent = selectedProperties.size;
+
+            if (selectedProperties.size > 0) {
+                bar.classList.remove('translate-y-full');
+            } else {
+                bar.classList.add('translate-y-full');
+            }
+        };
+
+        const clearCompare = () => {
+            selectedProperties.clear();
+            updateCompareBar();
+            // Uncheck all boxes
+            document.querySelectorAll('.compare-checkbox').forEach(cb => cb.checked = false);
+        };
+
+        document.getElementById('open-cross-compare-btn').addEventListener('click', () => {
+            if (selectedProperties.size === 0) return;
+            const modal = document.getElementById('cross-compare-modal');
+            const content = document.getElementById('cross-compare-content');
+
+            const selectedData = allClustersData.filter(c => selectedProperties.has(c.canonical_id));
+
+            let html = `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200 table-fixed">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="w-1/5 px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-100">Features</th>
+                                ${selectedData.map(c => `
+                                    <th class="px-4 py-3 text-left">
+                                        <div class="h-24 bg-gray-200 rounded mb-2 flex items-center justify-center text-gray-400">
+                                            <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        </div>
+                                        <div class="text-sm font-bold text-gray-900 truncate" title="${c.listings[0].title}">${c.listings[0].title}</div>
+                                    </th>
+                                `).join('')}
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Lowest Price</td>
+                                ${selectedData.map(c => `<td class="px-4 py-3 text-lg font-black text-indigo-600">${formatMoney(Math.min(...c.listings.map(l=>l.price_inr)))}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Location</td>
+                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900">${c.locality}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Type & BHK</td>
+                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900">${c.bhk ? c.bhk+' BHK ' : ''}${c.property_type || '-'}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Area</td>
+                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900">${c.average_area_sqft ? c.average_area_sqft.toLocaleString() + ' sq.ft' : '-'}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Price/sq.ft</td>
+                                ${selectedData.map(c => {
+                                    const min = Math.min(...c.listings.map(l=>l.price_inr));
+                                    const pps = c.average_area_sqft ? Math.round(min/c.average_area_sqft) : 0;
+                                    return `<td class="px-4 py-3 text-sm text-gray-900">${pps ? '₹'+pps.toLocaleString() : '-'}</td>`;
+                                }).join('')}
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Status</td>
+                                ${selectedData.map(c => `<td class="px-4 py-3 text-sm text-gray-900 capitalize">${c.status ? c.status.replace('_',' ') : '-'}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Sources</td>
+                                ${selectedData.map(c => {
+                                    const srcSet = [...new Set(c.listings.map(l=>l.source))];
+                                    return `<td class="px-4 py-3">
+                                        <div class="flex flex-wrap gap-1">
+                                            ${srcSet.map(s => getSourceLogo(s)).join('')}
+                                        </div>
+                                    </td>`;
+                                }).join('')}
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm font-bold text-gray-700 bg-gray-50">Action</td>
+                                ${selectedData.map(c => `<td class="px-4 py-3"><button onclick="openModal('${c.canonical_id}')" class="w-full bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold py-2 rounded transition-colors">Compare Sources</button></td>`).join('')}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+        });
+
+        const closeCrossCompareModal = () => {
+            document.getElementById('cross-compare-modal').classList.add('hidden');
+        };
+
         // Event Listeners
         filterForm.addEventListener('submit', (e) => {
             e.preventDefault();
             fetchProperties();
+        });
+
+        document.getElementById('main-search-btn')?.addEventListener('click', () => {
+            fetchProperties();
+        });
+
+        document.getElementById('main-search-text')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') fetchProperties();
         });
 
         sortSelect.addEventListener('change', () => {

@@ -31,6 +31,25 @@ def read_root():
 def health_check():
     return {"status": "ok"}
 
+@app.get("/api/stats")
+def get_stats(session: Session = Depends(get_session)):
+    SQLModel.metadata.create_all(session.bind)
+    from src.db.models import DBPropertyCluster, DBNormalizedListing
+    from sqlmodel import select, func
+
+    total_clusters = session.exec(select(func.count(DBPropertyCluster.canonical_id))).one_or_none() or 0
+    total_listings = session.exec(select(func.count(DBNormalizedListing.id))).one_or_none() or 0
+
+    # Calculate unique sources (approximate via distinct on listings)
+    sources = session.exec(select(DBNormalizedListing.source).distinct()).all()
+
+    return {
+        "properties_indexed": total_listings,
+        "clusters_indexed": total_clusters,
+        "sources_indexed": len(sources),
+        "duplicates_consolidated": total_listings - total_clusters if total_listings > total_clusters else 0
+    }
+
 @app.get("/api/properties")
 def search_properties(
     locality: Optional[str] = None,
@@ -39,7 +58,11 @@ def search_properties(
     min_area_sqft: Optional[float] = None,
     max_area_sqft: Optional[float] = None,
     max_price_per_sqft: Optional[float] = None,
-    sort_by: Optional[str] = Query(None, pattern="^(price_asc|price_desc|area_desc)$"),
+    property_type: Optional[str] = None,
+    bhk: Optional[str] = None,
+    status: Optional[str] = None,
+    builder: Optional[str] = None,
+    sort_by: Optional[str] = Query(None, pattern="^(price_asc|price_desc|area_desc|relevance)$"),
     session: Session = Depends(get_session)
 ):
     # Ensure tables are created first for tests
@@ -52,6 +75,10 @@ def search_properties(
         min_area=min_area_sqft,
         max_area=max_area_sqft,
         max_price_per_sqft=max_price_per_sqft,
+        property_type=property_type,
+        bhk=bhk,
+        status=status,
+        builder=builder,
         sort_by=sort_by
     )
 
@@ -64,12 +91,23 @@ def search_properties(
             "median_price_inr": c.median_price_inr,
             "average_area_sqft": c.average_area_sqft,
             "sources_count": c.sources_count,
+            "property_type": c.property_type,
+            "bhk": c.bhk,
+            "bathrooms": c.bathrooms,
+            "status": c.status,
+            "rera_id": c.rera_id,
+            "builder": c.builder,
+            "possession_date": c.possession_date,
+            "last_checked_at": c.last_checked_at,
             "listings": [
                 {
+                    "id": l.id,
                     "title": l.title,
                     "price_inr": l.price_inr,
                     "source": l.source,
-                    "area_sqft": l.area_sqft
+                    "area_sqft": l.area_sqft,
+                    "source_url": l.source_url,
+                    "last_checked_at": l.last_checked_at
                 } for l in c.listings
             ]
         })

@@ -15,7 +15,12 @@ def save_clusters(session: Session, clusters: List[DBPropertyCluster]):
 def get_clusters(session: Session, locality: Optional[str] = None,
                  min_price: Optional[float] = None, max_price: Optional[float] = None,
                  min_area: Optional[float] = None, max_area: Optional[float] = None,
-                 max_price_per_sqft: Optional[float] = None, sort_by: Optional[str] = None) -> List[DBPropertyCluster]:
+                 max_price_per_sqft: Optional[float] = None,
+                 property_type: Optional[str] = None,
+                 bhk: Optional[str] = None,
+                 status: Optional[str] = None,
+                 builder: Optional[str] = None,
+                 sort_by: Optional[str] = None) -> List[DBPropertyCluster]:
 
     query = select(DBPropertyCluster)
 
@@ -29,6 +34,26 @@ def get_clusters(session: Session, locality: Optional[str] = None,
         query = query.where(DBPropertyCluster.average_area_sqft >= min_area)
     if max_area is not None:
         query = query.where(DBPropertyCluster.average_area_sqft <= max_area)
+
+    if property_type:
+        query = query.where(DBPropertyCluster.property_type.ilike(f"%{property_type}%"))
+    if builder:
+        query = query.where(DBPropertyCluster.builder.ilike(f"%{builder}%"))
+    if status:
+        query = query.where(DBPropertyCluster.status.ilike(f"%{status}%"))
+    if bhk:
+        if bhk.endswith("+"):
+            try:
+                min_bhk = int(bhk[:-1])
+                query = query.where(DBPropertyCluster.bhk >= min_bhk)
+            except ValueError:
+                pass
+        else:
+            try:
+                exact_bhk = int(bhk)
+                query = query.where(DBPropertyCluster.bhk == exact_bhk)
+            except ValueError:
+                pass
 
     if sort_by == "price_asc":
         query = query.order_by(DBPropertyCluster.median_price_inr.asc())
