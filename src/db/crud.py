@@ -15,7 +15,13 @@ def save_clusters(session: Session, clusters: List[DBPropertyCluster]):
 def get_clusters(session: Session, locality: Optional[str] = None,
                  min_price: Optional[float] = None, max_price: Optional[float] = None,
                  min_area: Optional[float] = None, max_area: Optional[float] = None,
-                 max_price_per_sqft: Optional[float] = None, sort_by: Optional[str] = None) -> List[DBPropertyCluster]:
+                 max_price_per_sqft: Optional[float] = None,
+                 property_type: Optional[List[str]] = None,
+                 bhk: Optional[List[str]] = None,
+                 status: Optional[List[str]] = None,
+                 builder: Optional[str] = None,
+                 possession: Optional[str] = None,
+                 sort_by: Optional[str] = None) -> List[DBPropertyCluster]:
 
     query = select(DBPropertyCluster)
 
@@ -30,12 +36,63 @@ def get_clusters(session: Session, locality: Optional[str] = None,
     if max_area is not None:
         query = query.where(DBPropertyCluster.average_area_sqft <= max_area)
 
+    if property_type and len(property_type) > 0:
+        from sqlmodel import or_
+        conditions = [DBPropertyCluster.property_type.ilike(f"%{pt}%") for pt in property_type]
+        query = query.where(or_(*conditions))
+    if builder:
+        query = query.where(DBPropertyCluster.builder.ilike(f"%{builder}%"))
+    if status and len(status) > 0:
+        from sqlmodel import or_
+        conditions = [DBPropertyCluster.status.ilike(f"%{s}%") for s in status]
+        query = query.where(or_(*conditions))
+    if bhk and len(bhk) > 0:
+        from sqlmodel import or_
+        bhk_conditions = []
+        for b in bhk:
+            if b.endswith("+"):
+                try:
+                    min_bhk = int(b[:-1])
+                    bhk_conditions.append(DBPropertyCluster.bhk >= min_bhk)
+                except ValueError:
+                    pass
+            else:
+                try:
+                    exact_bhk = int(b)
+                    bhk_conditions.append(DBPropertyCluster.bhk == exact_bhk)
+                except ValueError:
+                    pass
+        if bhk_conditions:
+            query = query.where(or_(*bhk_conditions))
+
+    if possession:
+        from datetime import datetime, timedelta
+        now = datetime.utcnow()
+        if possession == "immediate":
+            # Assuming null or dates in the past mean immediate/ready
+            from sqlmodel import or_
+            query = query.where(or_(DBPropertyCluster.possession_date == None, DBPropertyCluster.possession_date <= now.isoformat()))
+        elif possession == "1_year":
+            one_year = now + timedelta(days=365)
+            query = query.where(DBPropertyCluster.possession_date <= one_year.isoformat())
+        elif possession == "3_years":
+            three_years = now + timedelta(days=365*3)
+            query = query.where(DBPropertyCluster.possession_date <= three_years.isoformat())
+
     if sort_by == "price_asc":
         query = query.order_by(DBPropertyCluster.median_price_inr.asc())
     elif sort_by == "price_desc":
         query = query.order_by(DBPropertyCluster.median_price_inr.desc())
     elif sort_by == "area_desc":
         query = query.order_by(DBPropertyCluster.average_area_sqft.desc())
+    elif sort_by == "price_sqft_asc":
+        query = query.where(DBPropertyCluster.average_area_sqft > 0).order_by((DBPropertyCluster.median_price_inr / DBPropertyCluster.average_area_sqft).asc())
+    elif sort_by == "most_sources":
+        query = query.order_by(DBPropertyCluster.sources_count.desc())
+    elif sort_by == "distance":
+        # Placeholder for distance - assuming we'll handle this purely in frontend if needed
+        # Or sort by id for stability in backend if no geo coords are in db.
+        query = query.order_by(DBPropertyCluster.id.asc())
 
     results = session.exec(query).all()
 

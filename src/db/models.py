@@ -11,6 +11,14 @@ class DBRawListing(SQLModel, table=True):
     locality: str
     image_phash: Optional[str] = None
     source_url: str
+    property_type: Optional[str] = None
+    bhk: Optional[int] = None
+    bathrooms: Optional[int] = None
+    status: Optional[str] = None
+    rera_id: Optional[str] = None
+    builder: Optional[str] = None
+    possession_date: Optional[str] = None
+    last_checked_at: Optional[str] = None
 
 class DBNormalizedListing(SQLModel, table=True):
     id: str = Field(primary_key=True)
@@ -22,6 +30,14 @@ class DBNormalizedListing(SQLModel, table=True):
     locality: str
     image_phash: Optional[str] = None
     source_url: str
+    property_type: Optional[str] = None
+    bhk: Optional[int] = None
+    bathrooms: Optional[int] = None
+    status: Optional[str] = None
+    rera_id: Optional[str] = None
+    builder: Optional[str] = None
+    possession_date: Optional[str] = None
+    last_checked_at: Optional[str] = None
     cluster_id: Optional[str] = Field(default=None, foreign_key="dbpropertycluster.canonical_id")
 
     cluster: Optional["DBPropertyCluster"] = Relationship(back_populates="listings")
@@ -32,5 +48,13 @@ class DBPropertyCluster(SQLModel, table=True):
     median_price_inr: float
     average_area_sqft: float
     sources_count: int
+    property_type: Optional[str] = None
+    bhk: Optional[int] = None
+    bathrooms: Optional[int] = None
+    status: Optional[str] = None
+    rera_id: Optional[str] = None
+    builder: Optional[str] = None
+    possession_date: Optional[str] = None
+    last_checked_at: Optional[str] = None
 
     listings: List[DBNormalizedListing] = Relationship(back_populates="cluster")
