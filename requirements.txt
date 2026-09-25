@@ -1,10 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlmodel
 pydantic
 imagehash
 Pillow
-pytest
 rapidfuzz
-fastapi
-uvicorn
 httpx
 beautifulsoup4
-sqlmodel
+pytest
